@@ -4,7 +4,11 @@
   "description": "Experience the global internet using Shuttle, the swiftest and most uncluttered proxy solution. Relish a heightened level of privacy during your online sessions, free from censorship.",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "prod": "pm2 start index.js --name shuttle",
+    "logs": "pm2 logs shuttle",
+    "stop": "pm2 stop shuttle",
+    "restart": "pm2 restart shuttle"
   },
   "repository": {
     "type": "git",
@@ -22,6 +26,7 @@
     "@tomphttp/bare-server-node": "^2.0.1",
     "ejs": "^3.1.9",
     "express": "^4.18.1",
+    "pm2": "^5.3.1",
     "yarn": "^1.22.22"
   },
   "engines": {
