@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "prod": "pm2 start index.js --name shuttle",
+    "prod": "pm2 start index.js --name shuttle -f",
     "logs": "pm2 logs shuttle",
     "stop": "pm2 stop shuttle",
-    "restart": "pm2 restart shuttle -f"
+    "restart": "pm2 restart shuttle"
   },
   "repository": {
     "type": "git",
