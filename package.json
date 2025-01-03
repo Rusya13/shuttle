@@ -8,7 +8,7 @@
     "prod": "pm2 start index.js --name shuttle",
     "logs": "pm2 logs shuttle",
     "stop": "pm2 stop shuttle",
-    "restart": "pm2 restart shuttle"
+    "restart": "pm2 restart shuttle -f"
   },
   "repository": {
     "type": "git",
