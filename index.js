@@ -33,7 +33,7 @@ for (const [path, page] of routes) {
       path,
       navItems,
       page,
-      domain: req.headers.host,
+      domain: 'shuttleproxy.com',
     })
   )
 }
