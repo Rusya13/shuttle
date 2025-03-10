@@ -9,8 +9,6 @@ importScripts("/uv/uv.bundle.js");
 importScripts("/uv/uv.config.js");
 importScripts(__uv$config.sw || "/uv/uv.sw.js");
 
-// Create new service worker with the UltraViolet v3 API
 const sw = new UVServiceWorker();
 
-// Handle fetch events using the UltraViolet v3 API
 self.addEventListener("fetch", (event) => event.respondWith(sw.fetch(event)));

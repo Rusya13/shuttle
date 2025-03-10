@@ -67,8 +67,7 @@ function resolveURL(url) {
 			return "/shuttle-dn/" + Ultraviolet.codec.xor.decode(url);
 		default:
 		case "uv":
-			// Use the Ultraviolet v3 encoding method
-			return __uv$config.prefix + __uv$config.encodeUrl(url);
+			return  __uv$config.prefix + __uv$config.encodeUrl(url);
 	}
 }
 
