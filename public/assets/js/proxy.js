@@ -1,6 +1,37 @@
 const msg = document.getElementById('m')
 const frame = document.getElementById('ifr')
 
+// window.aiptag = window.aiptag || { cmd: [] }
+// aiptag.cmd.player = aiptag.cmd.player || []
+// //CMP tool settings
+// aiptag.cmp = {
+//   show: true,
+//   position: 'centered', //centered, bottom
+//   button: true,
+//   buttonText: 'Privacy settings',
+//   buttonPosition: 'bottom-left', //bottom-left, bottom-right, bottom-center, top-left, top-right
+// }
+// aiptag.cmd.player.push(function () {
+//   aiptag.adplayer = new aipPlayer({
+//     AD_WIDTH: 960,
+//     AD_HEIGHT: 540,
+//     AD_DISPLAY: 'fullscreen', //default, fullscreen, fill, center, modal-center
+//     LOADING_TEXT: 'Loading Shuttle AD',
+//     PREROLL_ELEM: function () {
+//       return document.getElementById('videoad')
+//     },
+//     AIP_COMPLETE: function (state) {
+//       /*******************
+// 			 ***** WARNING *****
+// 			 *******************
+// 			 Please do not remove the PREROLL_ELEM
+// 			 from the page, it will be hidden automaticly.
+// 			*/
+//       // alert("Video Ad Completed: " + state);
+//     },
+//   })
+// })
+
 frame.addEventListener('load', () => (msg.innerText = frame.contentDocument.title))
 
 function searchurl(url) {
@@ -32,13 +63,9 @@ function isUrl(val = '') {
 }
 
 function resolveURL(url) {
-  const userAgent = navigator.userAgent
   switch (localStorage.getItem('shuttle||proxy')) {
     case 'dy':
       return '/shuttle-dn/' + Ultraviolet.codec.xor.decode(url)
-    case 'custom':
-      const encodedUrl = btoa(url).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-      return `/custom-proxy-handler.html/${encodedUrl}?ua=${encodeURIComponent(userAgent)}`
     default:
     case 'uv':
       return __uv$config.prefix + __uv$config.encodeUrl(url)
@@ -46,6 +73,9 @@ function resolveURL(url) {
 }
 
 function proxy(url) {
+  // Show the ad before proxying the URL
+  // show_videoad(url);
+
   document.getElementById('align').style.display = 'flex'
   document.querySelector('.sidebar').style.display = 'none'
   registerSW().then((worker) => {
@@ -62,3 +92,21 @@ function exit() {
   document.querySelector('.sidebar').style.display = ''
   frame.src = ''
 }
+
+// function show_videoad(url) {
+//   if (typeof aiptag.adplayer !== 'undefined') {
+//     aiptag.cmd.player.push(function () {
+//       aiptag.adplayer.startVideoAd()
+//     })
+//   } else {
+//     document.getElementById('align').style.display = 'flex'
+//     document.querySelector('.sidebar').style.display = 'none'
+//     registerSW().then((worker) => {
+//       if (!worker) {
+//         return (msg.innerHTML =
+//           'Error: Your browser does not support service workers or is blocking them (private browsing mode?), try using a different browser')
+//       }
+//       frame.src = resolveURL(url)
+//     })
+//   }
+// }
