@@ -38,6 +38,8 @@ for (const [path, page] of routes) {
   )
 }
 
+app.get('/3kh0', (req, res) => res.render('3kh0'))
+
 app.use((_, res) => res.status(404).render('404'))
 
 const httpServer = createServer()
