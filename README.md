@@ -1,4 +1,5 @@
 # Shuttle V3
+
 ### Shittle V3 bext proxy ever 🔥🔥🔥
 
 [![Deploy to Render](https://binbashbanana.github.io/deploy-buttons/buttons/remade/render.svg)](https://github.com/shuttlenetwork/shuttle/wiki#how-to-deploy-to-onrender)
@@ -12,7 +13,7 @@
 
 ## Discord Server
 
-[![Join us on Discord](https://invidget.switchblade.xyz/xi)](https://discord.gg/xi)
+[![Join us on Discord](https://invidget.switchblade.xyz/pYdmhJyX)](https://discord.gg/pYdmhJyX)
 
 ## Setup
 
@@ -22,5 +23,7 @@ cd shuttle
 npm install
 npm start
 ```
-## Info 
+
+## Info
+
 - If you are running this site on replit or other hosting platform that bans proxies, use [Shuttle Lite](https://github.com/shuttlenetwork/shuttle-lite)
