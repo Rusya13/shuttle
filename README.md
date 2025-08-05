@@ -13,7 +13,7 @@
 
 ## Discord Server
 
-[![Join us on Discord](https://invidget.switchblade.xyz/pYdmhJyX)](https://discord.gg/pYdmhJyX)
+[![Join us on Discord](https://invidget.switchblade.xyz/E57EpN2CHh)](https://discord.gg/E57EpN2CHh)
 
 ## Setup
 
