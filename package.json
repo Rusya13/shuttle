@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "prod": "pm2 start index.js --name shuttle -f",
+    "prod": "pm2 start ecosystem.config.cjs --env production",
+    "prod-old": "pm2 start index.js --name shuttle -f",
     "logs": "pm2 logs shuttle",
     "stop": "pm2 stop shuttle",
-    "restart": "pm2 restart shuttle"
+    "restart": "pm2 restart shuttle",
+    "reload": "pm2 reload shuttle",
+    "monit": "pm2 monit"
   },
   "repository": {
     "type": "git",
@@ -24,8 +27,11 @@
     "@nebula-services/dynamic": "^0.7.2-patch.2",
     "@titaniumnetwork-dev/ultraviolet": "^2.0.0",
     "@tomphttp/bare-server-node": "^2.0.1",
+    "compression": "^1.7.4",
     "ejs": "^3.1.9",
     "express": "^4.18.1",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^6.1.5",
     "pm2": "^5.3.1",
     "yarn": "^1.22.22"
   },
