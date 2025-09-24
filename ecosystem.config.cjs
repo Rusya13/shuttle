@@ -2,7 +2,7 @@ module.exports = {
   apps: [{
     name: 'shuttle',
     script: 'index.js',
-    instances: 2, // Use both CPU cores
+    instances: 3, // Use 3 CPU cores for better performance
     exec_mode: 'cluster',
     env: {
       NODE_ENV: 'production',
