@@ -49,6 +49,10 @@
 		</a>
 		<%- navItems.map(([to, name])=> `<a href="${to}" class="${to === path ? " nav-active" : "nav-btn"}"><span>${name}</span></a>`).join(" "); %>
 		<a id="time" class="nav-btn" style="display: flex; justify-content: flex-end; margin-left: auto;"></a>
+
+		<div style="max-width: 728px; margin:0 auto 10px;">
+			<%- include("adsterra-728x90"); %>
+		</div>
 		<div>
 			<input type="checkbox" class="checkbox" id="checkbox">
 			<label for="checkbox" class="checkbox-label">
