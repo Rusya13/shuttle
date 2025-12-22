@@ -41,6 +41,19 @@ For production environments, the application is configured to use PM2 for proces
     -   `npm run restart`: Restart the server.
     -   `npm run logs`: View server logs.
 
+## Design Constraints
+
+-   **Onboarding Arrow Position:** The following CSS values for `.onboarding-arrow-container` in `public/assets/css/style.css` must NEVER be changed, as they are precisely tuned for the UI:
+    ```css
+    .onboarding-arrow-container {
+      position: absolute;
+      top: 24px;
+      left: 70px;
+      width: 60px;
+      height: 60px;
+    }
+    ```
+
 ## Development Conventions
 
 ### Code Structure

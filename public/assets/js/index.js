@@ -72,8 +72,19 @@ window.addEventListener('load', () => {
 
   const savedTheme = localStorage.getItem('shuttle||themehex')
   if (savedTheme) {
-    document.body.style.backgroundColor = savedTheme
+    document.documentElement.style.setProperty('--bg-color', savedTheme);
   }
+  
+  const savedAccent = localStorage.getItem('shuttle||accenthex')
+  if (savedAccent) {
+    document.documentElement.style.setProperty('--accent-color', savedAccent);
+  }
+
+  const savedBorder = localStorage.getItem('shuttle||borderhex')
+  if (savedBorder) {
+    document.documentElement.style.setProperty('--border-color', savedBorder);
+  }
+
   if (localStorage.getItem('shuttle||fortniteMode') === 'activated') {
     document.body.style.backgroundImage = 'url("https://i.ytimg.com/vi/6evDWowLMbE/maxresdefault.jpg")'
   }

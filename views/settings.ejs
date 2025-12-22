@@ -1,67 +1,130 @@
-<style>
-	.box {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		margin-left: 25px;
-	}
+<div class="settings-container">
+    <div class="settings-header">
+        <h1>Settings</h1>
+        <p>Personalize your Shuttle experience</p>
+    </div>
 
-	.row {
-		display: flex;
-		flex-direction: row;
-	}
+    <div class="settings-grid">
+        <!-- Search & Navigation -->
+        <div class="settings-section">
+            <div class="section-title">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <h2>Search & Navigation</h2>
+            </div>
+            <div class="setting-item full-width">
+                <div class="setting-info">
+                    <h3>Search Engine</h3>
+                    <p>Choose your default search provider</p>
+                </div>
+                <div class="engine-radio-group">
+                    <label class="engine-radio">
+                        <input type="radio" name="se" value="ddg">
+                        <div class="engine-card">
+                            <img src="/ddg.png" alt="DuckDuckGo">
+                            <span>DuckDuckGo</span>
+                        </div>
+                    </label>
+                    <label class="engine-radio">
+                        <input type="radio" name="se" value="google">
+                        <div class="engine-card">
+                            <img src="/google.png" alt="Google">
+                            <span>Google</span>
+                        </div>
+                    </label>
+                    <label class="engine-radio">
+                        <input type="radio" name="se" value="brave">
+                        <div class="engine-card">
+                            <img src="/brave.png" alt="Brave">
+                            <span>Brave</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
 
-	.container {
-		display: flex;
-		flex-direction: column;
-	}
-</style>
+        <!-- Tab Masking -->
+        <div class="settings-section">
+            <div class="section-title">
+                <i class="fa-solid fa-mask"></i>
+                <h2>Tab Masking</h2>
+            </div>
+            <div class="setting-item vertical">
+                <div class="setting-info">
+                    <h3>Tab Title</h3>
+                    <p>Change the name shown on your browser tab</p>
+                </div>
+                <input type="text" id="tab-title-input" class="settingsInput" onchange="changeTitle(this.value)" placeholder="Enter title...">
+            </div>
+            <div class="setting-item vertical">
+                <div class="setting-info">
+                    <h3>Tab Icon</h3>
+                    <p>Change the favicon shown on your browser tab</p>
+                </div>
+                <input type="text" id="tab-icon-input" class="settingsInput" onchange="changeFavicon(this.value)" placeholder="Enter icon URL...">
+            </div>
+            <div class="setting-item vertical">
+                <div class="setting-info">
+                    <h3>Tab Reset</h3>
+                    <p>Restore default tab appearance</p>
+                </div>
+                <button class="settings-btn small" onclick="resetTabSettings()">Reset Tab Appearance</button>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>About:Blank Cloaking</h3>
+                    <p>Open Shuttle in a hidden window</p>
+                </div>
+                <button class="settings-btn" id="abc">Enable Cloaking</button>
+            </div>
+        </div>
 
-<div class="container">
-	<div class="row" style="margin-top:5%;">
-		<div class="box">
-			<p>Search Engine</p>
-			<select class="browsers" id="se">
-				<option value="ddg">DuckDuckGo</option>
-				<option value="google">Google</option>
-				<option value="brave">Brave</option>
-			</select>
-		</div>
-		<div class="box">
-			<p>Title</p>
-			<input type="text" class="settingsInput button" onchange="changeTitle(this.value)"
-				placeholder="Change Title" />
-			<input type="text" class="settingsInput button" onchange="changeFavicon(this.value)"
-				placeholder="Change Favicon (URL)" />
-		</div>
-		<div class="box">
-			<p>Proxy Type</p>
-			<select class="browsers" id="proxy">
-				<option value="uv">Ultraviolet</option>
-				<option value="dy">Dynamic (BETA)</option>
-			</select>
-		</div>
-	</div>
+        <!-- Personalization -->
+        <div class="settings-section">
+            <div class="section-title">
+                <i class="fa-solid fa-palette"></i>
+                <h2>Personalization</h2>
+            </div>
+            <div class="setting-item vertical">
+                <div class="setting-info">
+                    <h3>Accent Color</h3>
+                    <p>Change the color of buttons and active elements</p>
+                </div>
+                <input type="color" id="accentPicker" class="color-input" oninput="changeAccent(this.value)">
+            </div>
+            <div class="setting-item vertical">
+                <div class="setting-info">
+                    <h3>Border Color</h3>
+                    <p>Customize the color of borders and dividers</p>
+                </div>
+                <input type="color" id="borderPicker" class="color-input" oninput="changeBorder(this.value)">
+            </div>
+            <div class="setting-item vertical">
+                <div class="setting-info">
+                    <h3>Custom Background</h3>
+                    <p>Pick a custom background color</p>
+                </div>
+                <input type="color" id="colorPicker" class="color-input" oninput="changeTheme(this.value)">
+            </div>
+            <div class="setting-item vertical">
+                <div class="setting-info">
+                    <h3>Global Reset</h3>
+                    <p>Restore all settings to default</p>
+                </div>
+                <button class="settings-btn small" id="reset-theme">Reset Everything</button>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Mystery Mode</h3>
+                    <p>Who knows what this does?</p>
+                </div>
+                <button class="settings-btn" id="mystery-button">Toggle</button>
+            </div>
+        </div>
+    </div>
 
-	<div class="row">
-		<div class="box">
-			<p>Mystery</p>
-			<button class="button" id="mystery-button">Toggle</button>
-		</div>
-		<div class="box">
-			<p>Custom Themes</p>
-			<input type="color" id="colorPicker" class="settingsInput button" oninput="changeTheme(this.value)">
-			<button class="button" id="reset-theme">Reset</button>
-		</div>
-		<div class="box">
-			<p>About:Blank Cloaking</p>
-			<button class="button" id="abc">Click Me</button>
-		</div>
-	</div>
+    <div class="settings-footer">
+        <%- include("ad"); %>
+    </div>
 </div>
 
-<div style="margin-top: 50%; z-index: 1;">
-	<%- include("ad"); %>
-</div>
 <script src="/assets/js/settings.js"></script>

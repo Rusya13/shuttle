@@ -89,9 +89,6 @@ function updateUrlBar(url) {
         if (url.includes(__uv$config.prefix)) {
             const encoded = url.split(__uv$config.prefix)[1]
             urlBar.value = __uv$config.decodeUrl(encoded)
-        } else if (url.includes('/shuttle-dn/')) {
-            const encoded = url.split('/shuttle-dn/')[1]
-            urlBar.value = Ultraviolet.codec.xor.decode(encoded)
         } else if (url.endsWith('/new')) {
             urlBar.value = ''
         } else {
@@ -237,13 +234,7 @@ function isUrl(val = '') {
 }
 
 function resolveURL(url) {
-  switch (localStorage.getItem('shuttle||proxy')) {
-    case 'dy':
-      return '/shuttle-dn/' + Ultraviolet.codec.xor.decode(url)
-    default:
-    case 'uv':
-      return __uv$config.prefix + __uv$config.encodeUrl(url)
-  }
+  return __uv$config.prefix + __uv$config.encodeUrl(url)
 }
 
 function proxy(url) {
