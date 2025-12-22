@@ -89,13 +89,15 @@
   </form>
   <div id="suggestions"></div>
   <div id="search-tip">use <kbd>↑↓</kbd> to vibe with results, <kbd>enter</kbd> to send it</div>
+  
+  <div id="discord-wrapper" style="margin-top: 30px;">
+    <iframe src="https://proxyflare.org/invite/1056203335813824562?embed=1" width="420" height="380" frameborder="0" onload="document.getElementById('discord-link').style.display='none';"></iframe>
+    <a id="discord-link" title="discord" href="https://discord.gg/E57EpN2CHh">Discord</a>
+  </div>
+
   <div style="margin-top: 50px; z-index: 1"><%- include("ad"); %></div>
 
   <footer>
-    <div id="discord-wrapper">
-      <iframe src="https://proxyflare.org/invite/1056203335813824562?embed=1" width="420" height="380" frameborder="0" onload="document.getElementById('discord-link').style.display='none';"></iframe>
-      <a id="discord-link" title="discord" href="https://discord.gg/E57EpN2CHh">Discord</a>
-    </div>
   </footer>
 </div>
 <script src="/assets/js/home.js"></script>
