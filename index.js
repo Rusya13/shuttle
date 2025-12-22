@@ -38,6 +38,16 @@ for (const [path, page] of routes) {
   )
 }
 
+app.get('/new', (req, res) => {
+  res.render('layout', {
+    path: '/',
+    navItems,
+    page: 'index',
+    domain: 'shuttleproxy.com',
+    hideSidebar: true
+  })
+})
+
 app.get('/3kh0', (req, res) => res.render('3kh0'))
 
 app.use((_, res) => res.status(404).render('404'))

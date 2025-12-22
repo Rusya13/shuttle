@@ -1,102 +1,112 @@
-window.bare = new Ultraviolet.BareClient(new URL(__uv$config.bare, window.location));
+window.bare = new Ultraviolet.BareClient(new URL(__uv$config.bare, window.location))
 
 function fullscreen() {
-	var elem = document.getElementById("ifr")
-	if (elem.requestFullscreen) {
-		elem.requestFullscreen();
-	} else if (elem.webkitRequestFullscreen) { /* Safari */
-		elem.webkitRequestFullscreen();
-	} else if (elem.msRequestFullscreen) { /* IE11 */
-		elem.msRequestFullscreen();
-	}
+  var elem = document.getElementById('ifr')
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen()
+  } else if (elem.webkitRequestFullscreen) {
+    /* Safari */
+    elem.webkitRequestFullscreen()
+  } else if (elem.msRequestFullscreen) {
+    /* IE11 */
+    elem.msRequestFullscreen()
+  }
 }
 
-
 async function registerSW() {
-	await navigator.serviceWorker.register("/dynamic.sw-handler.js", {
-		scope: "/shuttle-dn",
-	});
-	const workerURL = "/uv.sw-handler.js";
-	const worker = await navigator.serviceWorker.getRegistration(workerURL, {
-		scope: "/shuttle-uv",
-	});
-	if (worker) return worker;
-	return navigator.serviceWorker.register(workerURL, { scope: __uv$config.prefix });
+  await navigator.serviceWorker.register('/dynamic.sw-handler.js', {
+    scope: '/shuttle-dn',
+  })
+  const workerURL = '/uv.sw-handler.js'
+  const worker = await navigator.serviceWorker.getRegistration(workerURL, {
+    scope: '/shuttle-uv',
+  })
+  if (worker) return worker
+  return navigator.serviceWorker.register(workerURL, { scope: __uv$config.prefix })
 }
 
 function setFavicon(f) {
-	var link = document.querySelector("link[rel~='icon']");
-	if (!link) {
-		link = document.createElement("link");
-		link.rel = "icon";
-		document.head.appendChild(link);
-	}
-	link.href = f;
+  var link = document.querySelector("link[rel~='icon']")
+  if (!link) {
+    link = document.createElement('link')
+    link.rel = 'icon'
+    document.head.appendChild(link)
+  }
+  link.href = f
 }
 
-function encodeUVUrlWithPath(url = "") {
-	return __uv$config.prefix + __uv$config.encodeUrl(url);
+function encodeUVUrlWithPath(url = '') {
+  return __uv$config.prefix + __uv$config.encodeUrl(url)
 }
 
 function abc() {
-	let inFrame;
+  let inFrame
 
-	try {
-		inFrame = window !== top;
-	} catch (e) {
-		inFrame = true;
-	}
+  try {
+    inFrame = window !== top
+  } catch (e) {
+    inFrame = true
+  }
 
-	if (inFrame) return;
-	const popup = window.open();
-	if (!popup || popup.closed) {
-		alert("Auto tab mask failed to open a new tab, allow popups and reload");
-		return;
-	}
+  if (inFrame) return
+  const popup = window.open()
+  if (!popup || popup.closed) {
+    alert('Auto tab mask failed to open a new tab, allow popups and reload')
+    return
+  }
 
-	popup.document.body.innerHTML = `<title>${localStorage.getItem("shuttle||name") || "Sign in to your account"}</title>
-<link rel="icon" href="${localStorage.getItem("shuttle||icon") || "https://www.microsoft.com/favicon.ico"}">
-<iframe style="height:100%; width: 100%; border: none; position: fixed; top: 0; right: 0; left: 0; bottom: 0; border: none" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation" src="${window.location.href}"></iframe>`;
+  popup.document.body.innerHTML = `<title>${localStorage.getItem('shuttle||name') || 'Sign in to your account'}</title>
+<link rel="icon" href="${localStorage.getItem('shuttle||icon') || 'https://www.microsoft.com/favicon.ico'}">
+<iframe style="height:100%; width: 100%; border: none; position: fixed; top: 0; right: 0; left: 0; bottom: 0; border: none" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation" src="${
+    window.location.href
+  }"></iframe>`
 
-	window.location.replace("https://www.google.com/");
+  window.location.replace('https://www.google.com/')
 }
 
-registerSW();
+registerSW()
 
-window.addEventListener("load", () => {
-	if (localStorage.getItem("shuttle||title")) document.title = localStorage.getItem("shuttle||title");
-	if (localStorage.getItem("shuttle||favicon")) setFavicon(localStorage.getItem("shuttle||favicon"));
+window.addEventListener('load', () => {
+  if (localStorage.getItem('shuttle||title')) document.title = localStorage.getItem('shuttle||title')
+  if (localStorage.getItem('shuttle||favicon')) setFavicon(localStorage.getItem('shuttle||favicon'))
 
-	const savedTheme = localStorage.getItem("shuttle||themehex");
-	if (savedTheme) {
-		document.body.style.backgroundColor = savedTheme;
-	}
-	if (localStorage.getItem("shuttle||fortniteMode") === "activated") {
-		document.body.style.backgroundImage = "url(\"https://i.ytimg.com/vi/6evDWowLMbE/maxresdefault.jpg\")";
-	}
-});
+  const savedTheme = localStorage.getItem('shuttle||themehex')
+  if (savedTheme) {
+    document.body.style.backgroundColor = savedTheme
+  }
+  if (localStorage.getItem('shuttle||fortniteMode') === 'activated') {
+    document.body.style.backgroundImage = 'url("https://i.ytimg.com/vi/6evDWowLMbE/maxresdefault.jpg")'
+  }
+})
 
 const checkbox = document.getElementById("checkbox");
-const darkMode = localStorage.getItem("shuttle||darkMode");
+const isLightMode = localStorage.getItem("shuttle||lightMode") === "true";
 
-function setLightMode(enable = true) {
-	enable ? document.body.classList.add("dark") : document.body.classList.remove("dark");
-	checkbox.checked = enable;
-}
-
-function toggleDarkMode() {
-	if (document.body.classList.contains("dark")) {
-		setLightMode(false);
-		localStorage.setItem("shuttle||darkMode", "false");
+function setTheme(isLight) {
+	if (isLight) {
+		document.documentElement.classList.add("light-mode");
+		if (checkbox) checkbox.checked = true;
+		localStorage.setItem("shuttle||lightMode", "true");
 	} else {
-		setLightMode(true);
-		localStorage.setItem("shuttle||darkMode", "true");
+		document.documentElement.classList.remove("light-mode");
+		if (checkbox) checkbox.checked = false;
+		localStorage.setItem("shuttle||lightMode", "false");
 	}
 }
 
-checkbox.addEventListener("change", toggleDarkMode);
+if (checkbox) {
+	checkbox.addEventListener("change", () => {
+		setTheme(checkbox.checked);
+	});
+}
 
-setLightMode(darkMode == "true");
+// Support the old darkMode key for compatibility if it exists
+if (localStorage.getItem("shuttle||darkMode") === "true") {
+	setTheme(false); // darkMode=true meant "dark" class (which was gray), but we want default dark now
+	localStorage.removeItem("shuttle||darkMode");
+} else {
+	setTheme(isLightMode);
+}
 
 /**
  * Why is this a thing
@@ -123,7 +133,9 @@ function mostUselessFunction() {
 	minutes = (minutes < 10 ? "0" : "") + minutes;
 	seconds = (seconds < 10 ? "0" : "") + seconds;
 
-	document.getElementById("time").innerHTML = year + "/" + month + "/" + day + " " + hours + ":" + minutes + ":" + seconds + " " + ampm;
+	if (document.getElementById("time")) {
+		document.getElementById("time").innerHTML = year + "/" + month + "/" + day + " " + hours + ":" + minutes + ":" + seconds + " " + ampm;
+	}
 }
 
 setInterval(mostUselessFunction, 1000);

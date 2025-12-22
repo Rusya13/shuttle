@@ -1,30 +1,14 @@
 <script src="/assets/js/proxy.js" defer></script>
 <div id="align">
   <nav id="nav">
-    <a onclick="exit()">
-      <i
-        class="fa-solid fa-xmark"
-        aria-hidden="true"
-        style="color: white; margin-right: auto; margin-left: 20px; font-size: 24px; cursor: pointer"
-      ></i>
+    <a onclick="exit()" title="Exit Proxy">
+      <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer"></i>
     </a>
-    <span id="m" style="margin: auto"></span>
-    <a onclick="erudaToggle()">
-      <i
-        class="fa-solid fa-code"
-        aria-hidden="true"
-        style="color: white; margin-left: auto; margin-right: 5px; font-size: 20px; cursor: pointer"
-      ></i>
-    </a>
-    <a onclick="fullscreen()">
-      <i
-        aria-hidden="true"
-        class="fa-solid fa-expand"
-        style="color: white; margin-left: auto; margin-right: 45px; font-size: 20px; cursor: pointer"
-      ></i>
-    </a>
+    <div id="tabs-bar">
+       <button id="add-tab" onclick="addTab()" title="New Tab">+</button>
+    </div>
   </nav>
-  <iframe id="ifr"></iframe>
+  <div id="iframes-container"></div>
 </div>
 
 <div class="alignment-container-1">

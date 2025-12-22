@@ -3,7 +3,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 
 :root {
-  --bg: #19191a;
+  --bg-color: #0b0b0b;
+  --text-color: #ffffff;
+  --text-muted: rgba(180, 180, 180, 0.5);
+  --accent-color: #824dff;
+  --secondary-accent: #c800ff;
+  --border-color: #222222;
+  --card-bg: rgba(35, 37, 36, 0.1);
+  --input-bg: transparent;
+  --nav-hover: #302f2f;
+  --sidebar-border: #222222;
   --font: 'Montserrat', sans-serif;
   --color-1: #3a027e;
   --color-2: #c800ff;
@@ -12,10 +21,29 @@
   --accent: #8b3dff;
 }
 
+.light-mode {
+  --bg-color: #f5f5f7;
+  --text-color: #1d1d1f;
+  --text-muted: rgba(0, 0, 0, 0.5);
+  --accent-color: #7909e2;
+  --secondary-accent: #a000e0;
+  --border-color: #d2d2d7;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --input-bg: #ffffff;
+  --nav-hover: #e8e8ed;
+  --sidebar-border: #d2d2d7;
+}
+
+.light-mode .background {
+  display: none;
+}
+
 /* ---- reset ---- */
 body {
   margin: 0;
   font: normal 75% Arial, Helvetica, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 canvas {
@@ -98,7 +126,7 @@ footer a,
 footer span {
   margin: auto;
   text-decoration: none;
-  color: #fff;
+  color: var(--text-color);
   font-size: 15px;
   font-family: 'Poppins';
 }
@@ -122,13 +150,13 @@ footer a:hover {
   outline: none;
   font-size: 15px;
   height: 25px;
-  background-color: transparent;
+  background-color: var(--input-bg);
   padding-right: 10px;
-  color: #ffffff;
+  color: var(--text-color);
   z-index: 1;
   width: 170px;
   transition: width 0.5s ease, border-radius 0.5s ease, box-shadow 0.5s ease;
-  border: 1px solid #222222;
+  border: 1px solid var(--border-color);
   padding: 12px;
 }
 
@@ -220,7 +248,7 @@ footer a:hover {
   width: 100%;
   height: 30px;
   background-color: transparent;
-  color: #ffffff;
+  color: var(--text-color);
   border: none;
   transition: 0.5s;
 }
@@ -233,7 +261,7 @@ footer a:hover {
 .head {
   font-family: 'Poppins';
   font-size: 36px;
-  color: #824dff;
+  color: var(--accent-color);
   width: 100%;
   text-align: center;
   animation: float 6s ease-out infinite;
@@ -278,7 +306,7 @@ body {
 }
 
 .i1 {
-  background-color: #824dff;
+  background-color: var(--accent-color);
   border-radius: 12px;
   border: 0;
   box-sizing: border-box;
@@ -304,11 +332,11 @@ body {
   width: 100%;
   height: 90px;
   z-index: 1;
-  border-bottom: 1px solid #222222;
+  border-bottom: 1px solid var(--sidebar-border);
 }
 
 .sidebar a {
-  color: #fff;
+  color: var(--text-color);
   padding: 13px;
   text-decoration: none;
   box-sizing: border-box;
@@ -318,8 +346,8 @@ body {
 }
 
 .sidebar a.active {
-  color: #ffffff;
-  background: #a772ff;
+  color: var(--text-color);
+  background: var(--accent-color);
   border-radius: 10px;
   z-index: 1;
 }
@@ -336,8 +364,8 @@ body {
 
 .settingsInput {
   background-color: rgba(0, 0, 0, 0);
-  color: white;
-  border-color: #ffffff;
+  color: var(--text-color);
+  border-color: var(--border-color);
   border-style: solid;
   border-radius: 5px;
   height: 40px;
@@ -422,8 +450,8 @@ label #cancel {
 
 .button {
   background-color: rgba(0, 0, 0, 0);
-  color: #ffffff;
-  border-color: #ffffff;
+  color: var(--text-color);
+  border-color: var(--border-color);
   border-style: solid;
   border-radius: 5px;
   width: 150px;
@@ -444,7 +472,7 @@ label #cancel {
 .settings-head {
   font-family: 'Poppins';
   font-size: 36px;
-  color: #8151ff;
+  color: var(--accent-color);
   padding: 0px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
 }
@@ -452,19 +480,19 @@ label #cancel {
 .settings-head2 {
   font-family: 'Poppins';
   font-size: 24px;
-  color: #8151ff;
+  color: var(--accent-color);
 }
 
 .browsers {
   font-family: 'Poppins';
   background-color: rgba(0, 0, 0, 0);
-  color: white;
+  color: var(--text-color);
   cursor: pointer;
   width: 150px;
   height: 30px;
   border-radius: 5px;
   border: none;
-  border-color: #ffffff;
+  border-color: var(--border-color);
   border-style: solid;
   z-index: 100;
 }
@@ -472,8 +500,8 @@ label #cancel {
 option {
   font-family: 'Poppins';
   border-radius: 5px;
-  background-color: #000;
-  color: #fff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .box {
@@ -527,7 +555,7 @@ option {
 
 .gs-box-header {
   font-family: 'Montserrat', sans-serif;
-  color: white;
+  color: var(--text-color);
 }
 
 .gs-box-button:hover {
@@ -541,49 +569,153 @@ body {
   background-position: center center;
   width: 100%;
   height: 100%;
-  background-color: #0b0b0b;
-}
-
-/* SEARCH */
-#nav {
-  min-height: 5vh;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#message {
-  text-align: center;
-}
-
-#ifr {
-  border-radius: 15px;
-  width: 100%;
-  height: 90%;
-  min-height: 95vh;
-  display: block;
-  border: 0px;
-  border-color: transparent;
-  z-index: 1;
-}
-
-#nav a {
-  margin-left: 10px;
-}
-
-#nav span {
-  color: white;
-  font-family: 'Poppins';
+  background-color: var(--bg-color);
 }
 
 #align {
   display: none;
-  z-index: 100000;
-  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  z-index: 100000;
+  flex-direction: column;
+  background-color: var(--bg-color);
+}
+
+#nav {
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+#tabs-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  margin: 0 15px;
+  flex-grow: 1;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+#tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  color: var(--text-color);
+  padding: 8px 12px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  max-width: 220px;
+  height: 35px;
+  font-family: 'Poppins';
+  font-size: 13px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  margin-bottom: -1px;
+  overflow: hidden;
+}
+
+.tab-title {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  font-size: 11px;
+  opacity: 0.5;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tab.active {
+  background: var(--bg-color);
+  border-bottom: 2px solid var(--accent-color);
+  font-weight: 600;
+}
+
+.tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+#add-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+#add-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#iframes-container {
+  flex-grow: 1;
+  width: 100%;
+  background: #fff; /* Most websites expect white bg */
+}
+
+#iframes-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none;
+}
+
+#iframes-container iframe.active {
+  display: block;
+}
+
+#m {
+  font-family: 'Poppins';
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 ul {
@@ -627,7 +759,7 @@ a {
 }
 
 #404 {
-  color: #824dff;
+  color: var(--accent-color);
   font-size: 24px;
   font-family: 'Poppins';
 }
@@ -658,14 +790,14 @@ iframe {
 }
 
 #splash {
-  color: rgba(180, 180, 180, 0.5);
+  color: var(--text-muted);
   font-family: 'Poppins';
   margin-bottom: 30px;
   text-align: center;
 }
 
 .searchicon {
-  color: white;
+  color: var(--text-color);
 }
 
 .logo-image {
@@ -677,7 +809,7 @@ iframe {
 
 .logo-image h1 {
   font-size: 2.5rem;
-  color: white !important;
+  color: var(--text-color) !important;
   font-family: 'Poppins', sans-serif !important;
   text-align: center !important;
 }
@@ -701,7 +833,7 @@ iframe {
   padding: 10px;
   width: 230px;
   font-family: 'poppins';
-  color: white;
+  color: var(--text-color);
   font-size: 0.8vw;
   text-decoration: none;
   background-color: transparent;
@@ -712,12 +844,12 @@ iframe {
 
 .suggestions a:link {
   text-decoration: none;
-  color: white;
+  color: var(--text-color);
   font-family: 'poppins';
 }
 
 .suggestions a:hover {
-  background-color: #a872ff5b;
+  background-color: var(--nav-hover);
 }
 
 svg {
@@ -734,7 +866,7 @@ svg {
   border-radius: 3px;
   padding: 10px 20px;
   background-color: transparent;
-  color: #ffffff;
+  color: var(--text-color);
   cursor: pointer;
   text-decoration: none;
 }
@@ -747,11 +879,11 @@ svg {
   bottom: 0;
   width: 50%;
   height: 2px;
-  background-color: #fff;
+  background-color: var(--text-color);
 }
 
 .nav-active:hover {
-  background-color: #302f2f;
+  background-color: var(--nav-hover);
 }
 
 .nav-btn {
@@ -760,13 +892,13 @@ svg {
   border-radius: 3px;
   padding: 10px 20px;
   background-color: transparent;
-  color: #ffffff;
+  color: var(--text-color);
   cursor: pointer;
   text-decoration: none;
 }
 
 .nav-btn:hover {
-  background-color: #302f2f;
+  background-color: var(--nav-hover);
 }
 
 a {
@@ -775,7 +907,7 @@ a {
 
 .box {
   z-index: 5;
-  background: rgba(35, 37, 36, 0.1);
+  background: var(--card-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   -moz-backdrop-filter: blur(8px);
@@ -783,10 +915,10 @@ a {
   -webkit-box-shadow: 0 0 50px -5px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0 0 50px -5px rgba(0, 0, 0, 0.75);
   box-shadow: 0 0 50px -5px rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
   width: 300px;
   height: 200px;
-  color: white;
+  color: var(--text-color);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -801,15 +933,6 @@ a {
 .box p {
   font-size: 25px;
   opacity: 100%;
-}
-
-body.dark {
-  background-color: #292c35;
-}
-
-body.dark h1,
-body.dark .support a {
-  color: #fff;
 }
 
 .checkbox {
