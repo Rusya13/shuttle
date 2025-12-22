@@ -49,13 +49,24 @@ httpServer.on('request', (req, res) => {
   else app(req, res)
 })
 
-httpServer.on('error', (err) => console.log(err))
+let port = parseInt(process.env.PORT || 8080)
+
+httpServer.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`Port ${port} is in use, trying ${port + 1}...`)
+    port++
+    httpServer.listen(port)
+  } else {
+    console.log(err)
+  }
+})
+
 httpServer.on('upgrade', (req, socket, head) => {
   if (bare.shouldRoute(req)) bare.routeUpgrade(req, socket, head)
   else socket.end()
 })
 
-httpServer.listen({ port: process.env.PORT || 8080 }, () => {
+httpServer.listen({ port }, () => {
   const addr = httpServer.address()
-  console.log(`\x1b[42m\x1b[1m shuttle\n Port: ${addr.port}\x1b[0m`)
+  console.log(`\x1b[42m\x1b[1m shuttle\n URL: http://localhost:${addr.port}\x1b[0m`)
 })

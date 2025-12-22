@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "prod": "pm2 start ecosystem.config.cjs --env production",
     "prod-old": "pm2 start index.js --name shuttle -f",
     "logs": "pm2 logs shuttle",
@@ -37,5 +38,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
