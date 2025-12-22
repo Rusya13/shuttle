@@ -5,7 +5,7 @@
       <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer"></i>
     </a>
     <div class="proxy-logo">
-      <img src="shuttle.png" alt="Logo">
+      <img src="/shuttle.png" alt="Logo">
     </div>
     <div id="tabs-bar">
        <button id="add-tab" onclick="addTab()" title="New Tab">+</button>
@@ -92,8 +92,10 @@
   <div style="margin-top: 50px; z-index: 1"><%- include("ad"); %></div>
 
   <footer>
-    <a title="discord" href="https://discord.gg/E57EpN2CHh">Discord</a>
-    <a title="github" href="https://github.com/shuttlenetwork/shuttle">Github</a>
+    <div id="discord-wrapper">
+      <iframe src="https://proxyflare.org/invite/1056203335813824562?embed=1" width="420" height="380" frameborder="0" onload="document.getElementById('discord-link').style.display='none';"></iframe>
+      <a id="discord-link" title="discord" href="https://discord.gg/E57EpN2CHh">Discord</a>
+    </div>
   </footer>
 </div>
 <script src="/assets/js/home.js"></script>
