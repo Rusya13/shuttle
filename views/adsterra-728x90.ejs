@@ -1,10 +1,32 @@
+<% var uniqueSuffix = Math.random().toString(36).substr(2, 9); %>
+<div id="ad-<%= uniqueSuffix %>" style="width:728px;height:90px;margin:0 auto;display:flex;justify-content:center;"></div>
 <script type="text/javascript">
-  atOptions = {
-    key: '8072f007f7bbfc1e60d32d438e6182af',
-    format: 'iframe',
-    height: 90,
-    width: 728,
-    params: {},
-  }
+  setTimeout(function() {
+    var container = document.getElementById('ad-<%= uniqueSuffix %>');
+    if (container) {
+      var iframe = document.createElement('iframe');
+      iframe.style.width = '728px';
+      iframe.style.height = '90px';
+      iframe.style.border = 'none';
+      iframe.style.overflow = 'hidden';
+      iframe.scrolling = 'no';
+      container.appendChild(iframe);
+
+      var doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write('<body style="margin:0;padding:0;overflow:hidden">');
+      doc.write('<script type="text/javascript">');
+      doc.write('atOptions = {');
+      doc.write("  key: '8072f007f7bbfc1e60d32d438e6182af',");
+      doc.write("  format: 'iframe',");
+      doc.write("  height: 90,");
+      doc.write("  width: 728,");
+      doc.write("  params: {},");
+      doc.write('};');
+      doc.write('<\/script>');
+      doc.write('<script type="text/javascript" src="//thieflamppost.com/8072f007f7bbfc1e60d32d438e6182af/invoke.js"><\/script>');
+      doc.write('</body>');
+      doc.close();
+    }
+  }, 1000);
 </script>
-<script type="text/javascript" src="//thieflamppost.com/8072f007f7bbfc1e60d32d438e6182af/invoke.js"></script>
