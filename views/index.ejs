@@ -35,8 +35,17 @@
   </nav>
   <div class="address-bar">
     <div class="browser-controls">
+        <a onclick="goBack()" id="back-btn" title="Go Back" class="disabled">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <a onclick="goForward()" id="forward-btn" title="Go Forward" class="disabled">
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
         <a onclick="reloadTab()" title="Reload Page">
             <i class="fa-solid fa-rotate-right"></i>
+        </a>
+        <a onclick="goHome()" title="Go Home">
+            <i class="fa-solid fa-house" style="font-size: 14px;"></i>
         </a>
     </div>
     <div class="url-bar-container">

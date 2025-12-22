@@ -11,6 +11,7 @@ function addTab(url = '') {
     id,
     url,
     title: 'New Tab',
+    navCount: 0
   }
 
   tabs.push(tab)
@@ -34,18 +35,20 @@ function addTab(url = '') {
   iframe.id = `iframe-${id}`
   
   iframe.onload = () => {
+    tab.navCount++;
     try {
       const title = iframe.contentDocument.title || 'New Tab'
       tab.title = title
       tabElement.querySelector('.tab-title').innerText = title
       
-      // Try to update URL bar with current iframe location
-      // This will only work if we can bypass cross-origin or if it's the proxy-decoded URL
       if (activeTabId === id) {
           updateUrlBar(iframe.contentWindow.location.href)
+          updateNavButtons()
       }
     } catch (e) {
-      console.log("Could not read iframe info", e)
+      if (activeTabId === id) {
+          updateNavButtons()
+      }
     }
   }
 
@@ -75,13 +78,13 @@ function switchTab(id) {
   const tab = tabs.find(t => t.id === id)
   if (tab && activeIframe) {
       updateUrlBar(activeIframe.src)
+      updateNavButtons()
   }
 }
 
 function updateUrlBar(url) {
     if (!urlBar) return
     
-    // Try to decode proxy URL back to original for the user
     try {
         if (url.includes(__uv$config.prefix)) {
             const encoded = url.split(__uv$config.prefix)[1]
@@ -99,10 +102,48 @@ function updateUrlBar(url) {
     }
 }
 
+function updateNavButtons() {
+    if (!activeTabId) return
+    const iframe = document.getElementById(`iframe-${activeTabId}`)
+    const tab = tabs.find(t => t.id === activeTabId)
+    if (!iframe || !tab) return
+
+    const backBtn = document.getElementById('back-btn')
+    const forwardBtn = document.getElementById('forward-btn')
+
+    // Since we can't reliably know the history position cross-origin,
+    // we enable Back if we've navigated at least once.
+    // We enable Forward as well once we've moved because we can't be sure if forward exists.
+    if (tab.navCount > 1) {
+        backBtn.classList.remove('disabled')
+        forwardBtn.classList.remove('disabled')
+    } else {
+        backBtn.classList.add('disabled')
+        forwardBtn.classList.add('disabled')
+    }
+}
+
 function reloadTab() {
     if (!activeTabId) return
     const iframe = document.getElementById(`iframe-${activeTabId}`)
     if (iframe) iframe.contentWindow.location.reload()
+}
+
+function goBack() {
+    if (!activeTabId) return
+    const iframe = document.getElementById(`iframe-${activeTabId}`)
+    if (iframe) iframe.contentWindow.history.back()
+}
+
+function goForward() {
+    if (!activeTabId) return
+    const iframe = document.getElementById(`iframe-${activeTabId}`)
+    if (iframe) iframe.contentWindow.history.forward()
+}
+
+function goHome() {
+    if (!activeTabId) return
+    loadUrlInTab(activeTabId, '/new')
 }
 
 urlBar.addEventListener('keydown', (e) => {

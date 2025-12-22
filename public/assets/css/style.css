@@ -740,6 +740,12 @@ option {
   background: rgba(255, 255, 255, 0.1);
 }
 
+.browser-controls a.disabled {
+  opacity: 0.2;
+  pointer-events: none;
+  cursor: default;
+}
+
 .url-bar-container {
   flex-grow: 1;
   background: rgba(0, 0, 0, 0.2);
