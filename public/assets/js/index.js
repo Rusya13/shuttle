@@ -80,16 +80,19 @@ window.addEventListener('load', () => {
 })
 
 const checkbox = document.getElementById("checkbox");
+const proxyCheckbox = document.getElementById("proxy-checkbox");
 const isLightMode = localStorage.getItem("shuttle||lightMode") === "true";
 
 function setTheme(isLight) {
 	if (isLight) {
 		document.documentElement.classList.add("light-mode");
 		if (checkbox) checkbox.checked = true;
+		if (proxyCheckbox) proxyCheckbox.checked = true;
 		localStorage.setItem("shuttle||lightMode", "true");
 	} else {
 		document.documentElement.classList.remove("light-mode");
 		if (checkbox) checkbox.checked = false;
+		if (proxyCheckbox) proxyCheckbox.checked = false;
 		localStorage.setItem("shuttle||lightMode", "false");
 	}
 }
@@ -97,6 +100,12 @@ function setTheme(isLight) {
 if (checkbox) {
 	checkbox.addEventListener("change", () => {
 		setTheme(checkbox.checked);
+	});
+}
+
+if (proxyCheckbox) {
+	proxyCheckbox.addEventListener("change", () => {
+		setTheme(proxyCheckbox.checked);
 	});
 }
 

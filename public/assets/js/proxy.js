@@ -1,5 +1,6 @@
 const tabsBar = document.getElementById('tabs-bar')
 const iframesContainer = document.getElementById('iframes-container')
+const urlBar = document.getElementById('url-bar')
 
 let tabs = []
 let activeTabId = null
@@ -37,8 +38,14 @@ function addTab(url = '') {
       const title = iframe.contentDocument.title || 'New Tab'
       tab.title = title
       tabElement.querySelector('.tab-title').innerText = title
+      
+      // Try to update URL bar with current iframe location
+      // This will only work if we can bypass cross-origin or if it's the proxy-decoded URL
+      if (activeTabId === id) {
+          updateUrlBar(iframe.contentWindow.location.href)
+      }
     } catch (e) {
-      console.log("Could not read iframe title", e)
+      console.log("Could not read iframe info", e)
     }
   }
 
@@ -64,7 +71,46 @@ function switchTab(id) {
 
   if (activeTab) activeTab.classList.add('active')
   if (activeIframe) activeIframe.classList.add('active')
+  
+  const tab = tabs.find(t => t.id === id)
+  if (tab && activeIframe) {
+      updateUrlBar(activeIframe.src)
+  }
 }
+
+function updateUrlBar(url) {
+    if (!urlBar) return
+    
+    // Try to decode proxy URL back to original for the user
+    try {
+        if (url.includes(__uv$config.prefix)) {
+            const encoded = url.split(__uv$config.prefix)[1]
+            urlBar.value = __uv$config.decodeUrl(encoded)
+        } else if (url.includes('/shuttle-dn/')) {
+            const encoded = url.split('/shuttle-dn/')[1]
+            urlBar.value = Ultraviolet.codec.xor.decode(encoded)
+        } else if (url.endsWith('/new')) {
+            urlBar.value = ''
+        } else {
+            urlBar.value = url
+        }
+    } catch (e) {
+        urlBar.value = url
+    }
+}
+
+function reloadTab() {
+    if (!activeTabId) return
+    const iframe = document.getElementById(`iframe-${activeTabId}`)
+    if (iframe) iframe.contentWindow.location.reload()
+}
+
+urlBar.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const val = urlBar.value.trim()
+        if (val) go(val)
+    }
+})
 
 function closeTab(id) {
   const index = tabs.findIndex((t) => t.id === id)
@@ -99,37 +145,44 @@ function loadUrlInTab(id, url) {
 
   if (url.startsWith('/')) {
     iframe.src = url
+    if (activeTabId === id) updateUrlBar(url)
     return
   }
 
   registerSW().then((worker) => {
     if (!worker) {
-      // We don't have 'msg' anymore, let's just alert or log
       console.error('Service worker support required')
       return
     }
-    iframe.src = resolveURL(url)
+    const resolved = resolveURL(url)
+    iframe.src = resolved
+    if (activeTabId === id) updateUrlBar(resolved)
   })
 }
 
 function searchurl(url) {
   let searchUrl = ''
   switch (localStorage.getItem('shuttle||search')) {
-    case 'ddg':
-      searchUrl = `https://duckduckgo.com/?q=${url}`
+    case 'google':
+      searchUrl = `https://www.google.com/search?q=${url}`
       break
     case 'brave':
       searchUrl = `https://search.brave.com/search?q=${url}`
       break
     default:
-    case 'google':
-      searchUrl = `https://www.google.com/search?q=${url}`
+    case 'ddg':
+      searchUrl = `https://duckduckgo.com/?q=${url}`
       break
   }
   proxy(searchUrl)
 }
 
 function go(url) {
+  if (window !== top) {
+    window.location.href = resolveURL(url);
+    return;
+  }
+  
   if (!isUrl(url)) searchurl(url)
   else {
     if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'http://' + url
@@ -153,11 +206,6 @@ function resolveURL(url) {
 }
 
 function proxy(url) {
-  if (window !== top) {
-    window.location.href = resolveURL(url);
-    return;
-  }
-
   document.getElementById('align').style.display = 'flex'
   document.querySelector('.sidebar').style.display = 'none'
 
@@ -178,4 +226,22 @@ function exit() {
   tabsBar.innerHTML = ''
   tabsBar.appendChild(addBtn)
   iframesContainer.innerHTML = ''
+  urlBar.value = ''
+}
+
+function erudaToggle() {
+  if (!activeTabId) return
+  const iframe = document.getElementById(`iframe-${activeTabId}`)
+  
+  if (iframe.contentWindow.eruda) {
+    iframe.contentWindow.eruda.destroy()
+  } else {
+    const erudaScript = document.createElement('script')
+    erudaScript.src = 'https://cdn.jsdelivr.net/npm/eruda'
+    iframe.contentDocument.body.appendChild(erudaScript)
+    erudaScript.onload = function () {
+      iframe.contentWindow.eruda.init()
+      iframe.contentWindow.eruda.show()
+    }
+  }
 }

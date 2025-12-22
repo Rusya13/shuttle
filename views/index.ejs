@@ -4,10 +4,45 @@
     <a onclick="exit()" title="Exit Proxy">
       <i class="fa-solid fa-xmark" style="font-size: 20px; cursor: pointer"></i>
     </a>
+    <div class="proxy-logo">
+      <img src="shuttle.png" alt="Logo">
+    </div>
     <div id="tabs-bar">
        <button id="add-tab" onclick="addTab()" title="New Tab">+</button>
     </div>
+    <div class="proxy-nav-right">
+      <div class="theme-toggle-wrapper">
+        <input type="checkbox" class="checkbox" id="proxy-checkbox">
+        <label for="proxy-checkbox" class="checkbox-label">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span class="ball"></span>
+        </label>
+      </div>
+    </div>
   </nav>
+  <div class="address-bar">
+    <div class="browser-controls">
+        <a onclick="reloadTab()" title="Reload Page">
+            <i class="fa-solid fa-rotate-right"></i>
+        </a>
+    </div>
+    <div class="url-bar-container">
+        <input type="text" id="url-bar" placeholder="Enter URL or search..." autocomplete="off">
+    </div>
+  </div>
   <div id="iframes-container"></div>
 </div>
 
@@ -18,13 +53,33 @@
     </div>
   </div>
   <div class="header-container"></div>
+  <div class="engine-onboarding">
+    <div class="onboarding-box">Choose search engine here</div>
+    <div class="onboarding-arrow-container">
+      <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 10 C 40 10, 45 20, 45 45" stroke-dasharray="4,3" />
+        <path d="M38 38 L45 45 L52 38" />
+      </svg>
+    </div>
+  </div>
   <form id="form">
-    <input autofocus autocomplete="off" class="search" id="search" placeholder="URL Or Search" required />
+    <input autofocus autocomplete="off" class="search" id="search" placeholder="Search the web or enter URL" required />
+    <div class="custom-select" id="engine-dropdown" tabindex="0">
+      <div class="select-selected">
+        <img src="/ddg.png" alt="ddg" class="engine-icon">
+      </div>
+      <div class="select-items select-hide">
+        <div data-value="ddg"><img src="/ddg.png"> DuckDuckGo</div>
+        <div data-value="google"><img src="/google.png"> Google</div>
+        <div data-value="brave"><img src="/brave.png"> Brave</div>
+      </div>
+    </div>
     <button type="submit" class="submit-button">
       <i class="fas fa-search searchicon" aria-hidden="true"></i>
     </button>
   </form>
   <div id="suggestions"></div>
+  <div id="search-tip">use <kbd>↑↓</kbd> to vibe with results, <kbd>enter</kbd> to send it</div>
   <div style="margin-top: 50px; z-index: 1"><%- include("ad"); %></div>
 
   <footer>

@@ -1,114 +1,218 @@
-const search = document.getElementById("search");
 const searchInput = document.getElementById("search");
+const searchForm = document.getElementById("form");
+const suggestions = document.getElementById("suggestions");
+const searchTip = document.getElementById("search-tip");
+const engineDropdown = document.getElementById("engine-dropdown");
+const engineSelected = engineDropdown.querySelector(".select-selected");
+const engineItems = engineDropdown.querySelector(".select-items");
+
 let debounceTimeout;
-let isRequestPending = false;
-var erudaScript; 
+let selectedIndex = -1;
+let engineSelectedIndex = -1;
 
-/*
-const splash = [
-	"shuttle is so hot",
-	"Go ahead, browse your ex's social media profiles.",
-	"We take your online privacy as seriously as your ex takes stalking your social media profiles.",
-	"Check our our github.",
-	"Shhh... we won't tell anyone you're here.",
-	"Join our discord for more links.",
-	"Imagine not using shuttle",
-	"No website is out of your reach now.",
-	"Your online freedom, our promise.",
-	"Because a blocked internet, is no internet at all.",
-	"Site blocked? Not on our watch!",
-	"What site r u going on.",
-	"Now 99% less skiddy... wait who put that there??? :<",
-	"try shittle toilet services"
-];
+const engineIcons = {
+    ddg: "/ddg.png",
+    google: "/google.png",
+    brave: "/brave.png"
+};
 
-window.addEventListener("load", () => {
-	document.querySelector("#splash").innerHTML = splash[Math.floor(Math.random() * (splash.length))];
+// Load saved search engine
+let currentEngine = localStorage.getItem("shuttle||search") || "ddg";
+updateEngineUI(currentEngine);
+
+function updateEngineUI(engine) {
+    const icon = engineSelected.querySelector("img");
+    icon.src = engineIcons[engine];
+    icon.alt = engine;
+    localStorage.setItem("shuttle||search", engine);
+}
+
+// Custom Select Logic
+function toggleEngineDropdown() {
+    engineItems.classList.toggle("select-hide");
+    if (!engineItems.classList.contains("select-hide")) {
+        engineSelectedIndex = -1;
+        updateEngineSelectedIndex(-1);
+    }
+}
+
+engineSelected.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleEngineDropdown();
 });
-*/
 
-window.addEventListener("DOMContentLoaded", () => {
-	const link = atob(window.location.hash.slice(1));
-	if (link) go(link);
+function updateEngineSelectedIndex(index) {
+    const items = engineItems.querySelectorAll("div");
+    items.forEach(item => item.classList.remove("active"));
+    
+    engineSelectedIndex = index;
+    if (engineSelectedIndex >= 0 && engineSelectedIndex < items.length) {
+        items[engineSelectedIndex].classList.add("active");
+    }
+}
+
+engineDropdown.addEventListener("keydown", (e) => {
+    const items = engineItems.querySelectorAll("div");
+    
+    if (e.key === "Enter" || e.key === " ") {
+        if (engineItems.classList.contains("select-hide")) {
+            e.preventDefault();
+            toggleEngineDropdown();
+        } else if (engineSelectedIndex >= 0) {
+            e.preventDefault();
+            const val = items[engineSelectedIndex].dataset.value;
+            currentEngine = val;
+            updateEngineUI(val);
+            engineItems.classList.add("select-hide");
+            searchInput.focus();
+        }
+    } else if (e.key === "ArrowDown" && !engineItems.classList.contains("select-hide")) {
+        e.preventDefault();
+        updateEngineSelectedIndex((engineSelectedIndex + 1) % items.length);
+    } else if (e.key === "ArrowUp" && !engineItems.classList.contains("select-hide")) {
+        e.preventDefault();
+        updateEngineSelectedIndex((engineSelectedIndex - 1 + items.length) % items.length);
+    } else if (e.key === "Escape") {
+        engineItems.classList.add("select-hide");
+    }
 });
 
-document.getElementById("form").addEventListener("submit", (event) => {
+engineItems.querySelectorAll("div").forEach((item, index) => {
+    item.addEventListener("click", () => {
+        currentEngine = item.dataset.value;
+        updateEngineUI(currentEngine);
+        engineItems.classList.add("select-hide");
+    });
+    item.addEventListener("mouseenter", () => {
+        updateEngineSelectedIndex(index);
+    });
+});
+
+document.addEventListener("click", () => {
+    engineItems.classList.add("select-hide");
+});
+
+function updateTipVisibility(visible) {
+    if (searchTip) {
+        if (visible) searchTip.classList.add("visible");
+        else searchTip.classList.remove("visible");
+    }
+}
+
+searchForm.addEventListener("submit", (event) => {
 	event.preventDefault();
-	go(search.value);
+    const activeItem = suggestions.querySelector(".suggestion-item.active");
+    if (activeItem) {
+        const text = activeItem.querySelector("span").innerText;
+        searchInput.value = text;
+        go(text);
+    } else {
+        go(searchInput.value);
+    }
+    suggestions.style.display = "none";
+    updateTipVisibility(false);
 });
 
 async function fetchResults(searchText) {
 	try {
 		const response = await bare.fetch(`https://duckduckgo.com/ac/?q=${encodeURIComponent(searchText)}`);
 		const data = await response.json();
-		isRequestPending = false;
-		if (!Array.isArray(data)) {
-			console.log(`Error: Invalid response format. Expected Array (got ${typeof data})`);
-			return;
-		}
-		const suggestions = document.getElementById("suggestions");
+		
+		if (!Array.isArray(data)) return;
+
 		suggestions.innerHTML = "";
-		for(const result of (data.map(r => r.phrase))) {
+        selectedIndex = -1;
+		
+		data.forEach((item, index) => {
+            const result = item.phrase;
 			const suggestionItem = document.createElement("div");
-			const suggestionLink = document.createElement("a");
-			suggestionItem.classList = ["suggestions"];
+			suggestionItem.className = "suggestion-item";
+            suggestionItem.dataset.index = index;
+			
+            suggestionItem.innerHTML = `<i class="fas fa-search"></i><span>${result}</span>`;
 
-			const boldText = result.includes(searchText) ? `<strong>${searchText}</strong>` : searchText;
-			suggestionLink.innerHTML = result.replace(searchText, boldText);
-
-			suggestionLink.addEventListener("click", (event) => {
-				event.preventDefault();
-				searchurl(result);
+			suggestionItem.addEventListener("click", () => {
+				searchInput.value = result;
+				go(result);
+                suggestions.style.display = "none";
+                updateTipVisibility(false);
 			});
-			suggestionItem.appendChild(suggestionLink);
+
+            suggestionItem.addEventListener("mouseenter", () => {
+                updateSelectedIndex(index);
+            });
+
 			suggestions.appendChild(suggestionItem);
-		}
+		});
+
+        if (data.length > 0) {
+            suggestions.style.display = "block";
+            updateTipVisibility(true);
+        } else {
+            suggestions.style.display = "none";
+            updateTipVisibility(false);
+        }
 	} catch (e) {
-		isRequestPending = false;
 		console.error(e);
 	}
 }
 
+function updateSelectedIndex(index) {
+    const items = suggestions.querySelectorAll(".suggestion-item");
+    items.forEach(item => item.classList.remove("active"));
+    
+    selectedIndex = index;
+    if (selectedIndex >= 0 && selectedIndex < items.length) {
+        items[selectedIndex].classList.add("active");
+        items[selectedIndex].scrollIntoView({ block: 'nearest' });
+    }
+}
+
+searchInput.addEventListener("keydown", (e) => {
+    const items = suggestions.querySelectorAll(".suggestion-item");
+    
+    if (suggestions.style.display === "block" && items.length > 0) {
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            updateSelectedIndex((selectedIndex + 1) % items.length);
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            updateSelectedIndex((selectedIndex - 1 + items.length) % items.length);
+        } else if (e.key === "Escape") {
+            suggestions.style.display = "none";
+            updateTipVisibility(false);
+            selectedIndex = -1;
+        }
+    }
+});
+
 searchInput.addEventListener("input", (event) => {
 	clearTimeout(debounceTimeout);
-	const searchText = event.target.value;
+	const searchText = event.target.value.trim();
 
 	debounceTimeout = setTimeout(() => {
 		if (searchText.length >= 1) {
 			fetchResults(searchText)
-		}
-		if (searchText.length < 1) {
-			document.getElementById("suggestions").style.display = "none";
 		} else {
-			document.getElementById("suggestions").style.display = "block";
+			suggestions.style.display = "none";
+            updateTipVisibility(false);
+            selectedIndex = -1;
 		}
-	}, 100);
+	}, 150);
 });
 
-const form = document.getElementById("form");
-
-searchInput.addEventListener("input", (event) => {
-	const searchText = event.target.value;
-
-	if (searchText.trim().length > 0) {
-		form.focus();
-	}
+// Hide suggestions when clicking outside
+document.addEventListener("click", (e) => {
+    if (!searchForm.contains(e.target) && !suggestions.contains(e.target)) {
+        suggestions.style.display = "none";
+        updateTipVisibility(false);
+        selectedIndex = -1;
+    }
 });
 
-function erudaToggle() {
-	var elem = document.getElementById("ifr");
-	
-	if (erudaScript) {
-		elem.contentWindow.eruda.destroy(); 
-		elem.removeChild(erudaScript);
-		erudaScript = undefined;
-	} else {
-		erudaScript = document.createElement("script");
-		erudaScript.src = "https://cdn.jsdelivr.net/npm/eruda";
-		elem.contentDocument.body.appendChild(erudaScript);
-		erudaScript.onload = function() {
-			elem.contentWindow.eruda.init();
-			elem.contentWindow.eruda.show();
-		};
-	}
-}
+searchInput.addEventListener("focus", () => {
+    if (searchInput.value.trim().length >= 1 && suggestions.children.length > 0) {
+        suggestions.style.display = "block";
+        updateTipVisibility(true);
+    }
+});
