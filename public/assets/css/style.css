@@ -9,7 +9,7 @@
   --accent-color: #824dff;
   --secondary-accent: #c800ff;
   --border-color: #333333;
-  --card-bg: rgba(35, 37, 36, 0.1);
+  --card-bg: rgba(35, 37, 36, 1);
   --input-bg: transparent;
   --nav-hover: #302f2f;
   --sidebar-border: #333333;
