@@ -6,6 +6,8 @@ let score = 0;
 let altitude = 0;
 let frameCount = 0;
 let loopId = null;
+let lastTime = 0;
+let dt = 1; // Delta time factor (1.0 = target 60fps)
 
 // Physics-based shuttle
 let shuttle = {
@@ -139,9 +141,9 @@ function createParticle(xOffset, yOffset, rotation) {
 function updateParticles() {
     for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= p.decay;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= p.decay * dt;
         if (p.life <= 0) particles.splice(i, 1);
     }
 }
@@ -186,13 +188,16 @@ function drawShuttle() {
     ctx.shadowBlur = 0; 
 }
 
+let spawnTimer = 0;
 function spawnObstacle() {
     const scale = getScale();
     const config = levelConfigs[Math.min(currentLevel - 1, levelConfigs.length - 1)];
     const speedFactor = 1 + (altitude / 10000);
     const spawnRate = Math.max(15, Math.floor(80 / speedFactor));
     
-    if (frameCount % spawnRate === 0) {
+    spawnTimer += dt;
+    if (spawnTimer >= spawnRate) {
+        spawnTimer = 0;
         const size = (30 + Math.random() * 20) * scale;
         const imgIndex = Math.floor(Math.random() * obsImages.length);
         const horizontalDrift = (Math.random() - 0.5) * 2 * config.unexpected * scale;
@@ -213,9 +218,9 @@ function spawnObstacle() {
 
 function drawObstacles() {
     obstacles.forEach((obs, index) => {
-        obs.y += obs.speed;
-        obs.x += obs.vx || 0;
-        obs.rot += obs.rotSpeed;
+        obs.y += obs.speed * dt;
+        obs.x += (obs.vx || 0) * dt;
+        obs.rot += obs.rotSpeed * dt;
         
         const img = obsImages[obs.imgIndex];
         
@@ -259,7 +264,7 @@ function drawBackground() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     stars.forEach(star => {
-        star.y += star.speed * speedFactor;
+        star.y += star.speed * speedFactor * dt;
         if (star.y > canvas.height) {
             star.y = 0;
             star.x = Math.random() * canvas.width;
@@ -325,9 +330,9 @@ function drawUI() {
     ctx.textAlign = 'left';
     ctx.fillStyle = '#fff';
     ctx.font = `${Math.floor(11 * scale)}px monospace`;
-    ctx.fillText(`▲ ${altitude.toString().padStart(5, '0')}m`, 15 * scale, canvas.height - (30 * scale));
+    ctx.fillText(`▲ ${Math.ceil(altitude).toString().padStart(5, '0')}m`, 15 * scale, canvas.height - (30 * scale));
     ctx.fillStyle = '#824dff';
-    ctx.fillText(`⚡ ${kmSpeed.toFixed(2)}km/s`, 15 * scale, canvas.height - (18 * scale));
+    ctx.fillText(`⚡ ${Math.ceil(kmSpeed)}km/s`, 15 * scale, canvas.height - (18 * scale));
 
     // Progress Bar
     const progress = Math.min(1, (kmSpeed - 7.4) / (config.targetSpeed - 7.4));
@@ -392,11 +397,11 @@ function showMonitorOverlay(isSuccess) {
         title.innerText = 'MISSION ACCOMPLISHED';
         title.className = 'success';
         const config = levelConfigs[Math.min(currentLevel - 1, levelConfigs.length - 1)];
-        stats.innerText = `${config.name} - ${config.targetSpeed}km/s REACHED`;
+        stats.innerText = `${config.name} - ${Math.ceil(config.targetSpeed)}km/s REACHED`;
     } else {
         title.innerText = 'MISSION FAILED';
         title.className = 'failure';
-        stats.innerText = `LVL: ${currentLevel} | ALT: ${altitude}m`;
+        stats.innerText = `LVL: ${currentLevel} | ALT: ${Math.ceil(altitude)}m`;
     }
     
     updateMonitorMenuHTML();
@@ -471,17 +476,19 @@ function hideMonitorOverlay() {
 
 function update() {
     frameCount++;
-    altitude += 1.5;
+    altitude += 1.5 * dt;
     const scale = getScale();
     
-    const kbSpeed = 5 * scale;
+    const kbSpeed = 5 * scale * dt;
     if (keys['ArrowLeft'] || keys['a']) shuttle.targetX -= kbSpeed;
     if (keys['ArrowRight'] || keys['d']) shuttle.targetX += kbSpeed;
     shuttle.targetX = Math.max(shuttle.width, Math.min(canvas.width - shuttle.width, shuttle.targetX));
 
     const oldX = shuttle.x;
-    shuttle.x += (shuttle.targetX - shuttle.x) * 0.15;
-    shuttle.vx = shuttle.x - oldX;
+    // Using simple lerp scaling for performance, cap to prevent overshooting
+    const lerpFactor = Math.min(0.99, 0.15 * dt);
+    shuttle.x += (shuttle.targetX - shuttle.x) * lerpFactor;
+    shuttle.vx = (shuttle.x - oldX) / dt; // Normalize vx for drawing logic
 
     if (shuttle.x < shuttle.width) shuttle.x = shuttle.width;
     if (shuttle.x > canvas.width - shuttle.width) shuttle.x = canvas.width - shuttle.width;
@@ -490,8 +497,19 @@ function update() {
     spawnObstacle();
 }
 
-function gameLoop() {
-    if (!gameRunning) return;
+function gameLoop(timestamp) {
+    if (!gameRunning) {
+        lastTime = 0;
+        return;
+    }
+
+    if (!lastTime) lastTime = timestamp;
+    const elapsed = timestamp - lastTime;
+    lastTime = timestamp;
+    
+    // Normalize dt: 1.0 means exactly 60fps. 2.0 means 30fps (needs 2x movement).
+    // Cap at 3.0 to prevent huge jumps if the tab was suspended
+    dt = Math.min(3.0, elapsed / (1000 / 60));
 
     update();
     drawBackground();
