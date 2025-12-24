@@ -50,6 +50,10 @@ app.get('/new', (req, res) => {
 
 app.get('/3kh0', (req, res) => res.render('3kh0'))
 
+app.get('/minigames/ascent', (req, res) => {
+  res.render('minigame-ascent', { layout: false })
+})
+
 app.use((_, res) => res.status(404).render('404'))
 
 const httpServer = createServer()

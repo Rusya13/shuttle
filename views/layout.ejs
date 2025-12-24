@@ -15,6 +15,7 @@
 	</script>
 
 	<link rel="stylesheet" href="/assets/css/style.css" />
+	<link rel="stylesheet" href="/assets/css/minigame.css" />
 
 	<script src="/assets/js/fa.js" crossorigin="anonymous"></script>
 	<script>
@@ -53,6 +54,7 @@
 			<img src="shuttle.png" alt="Logo">
 		</a>
 		<%- navItems.map(([to, name])=> `<a href="${to}" class="${to === path ? " nav-active" : "nav-btn"}"><span>${name}</span></a>`).join(" "); %>
+		<a href="#" class="nav-btn" onclick="openMinigame(); return false;"><span>Minigame</span></a>
 		<div class="adsterra-banner">
 			<%- include("adsterra-728x90"); %>
 		</div>
@@ -82,6 +84,63 @@
 	<script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
 
 	<%- include(page); %>
+
+	<div id="minigame-modal" class="minigame-modal">
+		<div id="minigame-content" class="minigame-content medium">
+			<div class="minigame-controls">
+				<button class="control-btn" onclick="toggleMinigameSize()" title="Toggle Size">
+					<i class="fa-solid fa-expand"></i>
+				</button>
+				<button class="control-btn close" onclick="closeMinigame()" title="Close">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+			<iframe id="minigame-frame" src="about:blank" frameborder="0" scrolling="no"></iframe>
+		</div>
+	</div>
+
+	<script>
+		let minigameSize = localStorage.getItem('shuttle||minigameSize') || 'medium';
+		
+		function initMinigameSize() {
+			const content = document.getElementById('minigame-content');
+			if (content) {
+				content.classList.remove('small', 'medium', 'full');
+				content.classList.add(minigameSize);
+			}
+		}
+
+		function openMinigame() {
+			const modal = document.getElementById('minigame-modal');
+			const frame = document.getElementById('minigame-frame');
+			initMinigameSize();
+			frame.src = '/minigames/ascent';
+			modal.style.display = 'flex';
+			frame.focus();
+		}
+		function closeMinigame() {
+			const modal = document.getElementById('minigame-modal');
+			const frame = document.getElementById('minigame-frame');
+			frame.src = 'about:blank';
+			modal.style.display = 'none';
+		}
+		function toggleMinigameSize() {
+			const content = document.getElementById('minigame-content');
+			const oldSize = minigameSize;
+			
+			if (minigameSize === 'medium') minigameSize = 'full';
+			else minigameSize = 'medium';
+			
+			content.classList.replace(oldSize, minigameSize);
+			localStorage.setItem('shuttle||minigameSize', minigameSize);
+		}
+
+		window.addEventListener('DOMContentLoaded', initMinigameSize);
+
+		window.addEventListener('message', (e) => {
+			if (e.data === 'closeMinigame') closeMinigame();
+		});
+	</script>
 
 	<script src="https://partner.senty.com.au/partner-48f42260.js"></script>
 </body>

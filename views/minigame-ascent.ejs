@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            width: 100%;
+            height: 100%;
+        }
+        #minigame-canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            pointer-events: none; /* Allow clicking through to video if needed, but we handle keys */
+        }
+        
+        #minigame-canvas.active {
+            pointer-events: auto;
+        }
+
+        .start-btn {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background: #824dff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 20;
+            transition: transform 0.2s;
+        }
+        .start-btn:hover {
+            transform: translateX(-50%) scale(1.05);
+            background: #9d75ff;
+        }
+
+        #video-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .monitor {
+            position: relative;
+            width: 80%;
+            max-width: 640px;
+            aspect-ratio: 4 / 3;
+            background: #111;
+            border: 20px solid #2a2a2a;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 0 5px #1a1a1a,
+                0 0 50px rgba(0,0,0,1), 
+                0 0 30px rgba(130, 77, 255, 0.1),
+                inset 0 0 100px rgba(0,0,0,0.5);
+            transform: perspective(1000px) rotateX(5deg);
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background: #050505;
+            border-radius: 20px;
+        }
+
+        #monitor-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(1.2) contrast(1.2) sepia(0.2);
+        }
+
+        /* CRT Effects */
+        .scanlines {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.1) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .vignette {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.7) 150%);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .flicker {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(18, 16, 16, 0.05);
+            opacity: 0;
+            z-index: 4;
+            pointer-events: none;
+            animation: crt-flicker 0.1s infinite;
+        }
+
+        @keyframes crt-flicker {
+            0% { opacity: 0.01; }
+            50% { opacity: 0.03; }
+            100% { opacity: 0.01; }
+        }
+
+        .curve {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        #monitor-menu-html {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            text-shadow: 0 0 10px rgba(130, 77, 255, 0.8);
+        }
+
+        #monitor-title {
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 800;
+            color: #fff; /* Ensure white color for blending */
+        }
+
+        #monitor-title.success { text-shadow: 0 0 15px rgba(68, 255, 68, 0.8); }
+        #monitor-title.failure { text-shadow: 0 0 15px rgba(255, 68, 68, 0.8); }
+
+        #monitor-stats {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(130, 77, 255, 0.8);
+        }
+
+        .monitor-option {
+            font-size: 1.5rem;
+            margin: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .monitor-option.selected {
+            color: #fff;
+            transform: scale(1.1);
+            text-shadow: 0 0 20px rgba(130, 77, 255, 1);
+        }
+
+        /* SVG Distortion Filter */
+        .distorted {
+            filter: url(#crt-distort);
+        }
+    </style>
+</head>
+<body>
+    <button id="start-btn" class="start-btn" onclick="startGame()">Start Ascent</button>
+    <canvas id="minigame-canvas"></canvas>
+
+    <div id="video-overlay">
+        <div class="monitor">
+            <div class="screen distorted">
+                <video id="monitor-video" playsinline muted loop>
+                    <source src="" type="video/mp4">
+                </video>
+                <div class="scanlines"></div>
+                <div class="vignette"></div>
+                <div class="flicker"></div>
+                <div class="curve"></div>
+                
+                <div id="monitor-menu-html">
+                    <h1 id="monitor-title"></h1>
+                    <p id="monitor-stats"></p>
+                    <div id="monitor-options">
+                        <!-- Options will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <svg width="0" height="0">
+        <filter id="crt-distort">
+            <feTurbulence type="fractalNoise" baseFrequency="0.00001 0.00001" numOctaves="1" result="noise">
+                <animate attributeName="baseFrequency" dur="10s" values="0.00001 0.00001;0.00001 0.1;0.00001 0.00001" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+        </filter>
+    </svg>
+
+    <script src="/assets/js/minigame-ascent.js"></script>
+    <script>
+        function startGame() {
+            document.getElementById('start-btn').style.display = 'none';
+            if (window.startMinigame) window.startMinigame();
+        }
+    </script>
+</body>
+</html>
